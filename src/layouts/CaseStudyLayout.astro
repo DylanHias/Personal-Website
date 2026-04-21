@@ -1,0 +1,108 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Frontmatter {
+  title: string;
+  seoTitle: string;
+  description: string;
+  path: string;
+  role: string;
+  stack: string[];
+  status: string;
+  timeline?: string;
+}
+
+interface Props {
+  frontmatter?: Frontmatter;
+  // Also accept direct props so the layout works outside MDX too.
+  title?: string;
+  seoTitle?: string;
+  description?: string;
+  path?: string;
+  role?: string;
+  stack?: string[];
+  status?: string;
+  timeline?: string;
+}
+
+const fm = Astro.props.frontmatter ?? (Astro.props as Frontmatter);
+const {
+  title,
+  seoTitle,
+  description,
+  path,
+  role,
+  stack,
+  status,
+  timeline,
+} = fm;
+---
+
+<BaseLayout
+  title={seoTitle}
+  description={description}
+  path={path}
+  ogType="article"
+>
+  <article class="relative">
+    <div class="mx-auto max-w-5xl px-6 sm:px-10 pt-32 sm:pt-40 pb-16">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        Back to home
+      </a>
+
+      <header class="mt-10" data-reveal>
+        <p class="eyebrow">Case study</p>
+        <h1
+          class="section-title mt-3 text-fg"
+        >
+          {title}
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg text-muted leading-relaxed">
+          {description}
+        </p>
+      </header>
+
+      <dl
+        class="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 border-t border-b border-line py-8"
+      >
+        <div>
+          <dt class="eyebrow text-[0.7rem] text-muted">Role</dt>
+          <dd class="mt-1 text-fg">{role}</dd>
+        </div>
+        <div>
+          <dt class="eyebrow text-[0.7rem] text-muted">Status</dt>
+          <dd class="mt-1 text-fg">{status}</dd>
+        </div>
+        <div class="sm:col-span-2">
+          <dt class="eyebrow text-[0.7rem] text-muted">Stack</dt>
+          <dd class="mt-1 flex flex-wrap gap-x-2 gap-y-1">
+            {
+              stack.map((s) => (
+                <span class="text-sm text-fg/90">
+                  {s}
+                  <span class="text-subtle mx-1" aria-hidden="true">·</span>
+                </span>
+              ))
+            }
+          </dd>
+        </div>
+        {
+          timeline && (
+            <div class="sm:col-span-2">
+              <dt class="eyebrow text-[0.7rem] text-muted">Timeline</dt>
+              <dd class="mt-1 text-fg">{timeline}</dd>
+            </div>
+          )
+        }
+      </dl>
+
+      <div class="case-prose mt-12">
+        <slot />
+      </div>
+    </div>
+  </article>
+</BaseLayout>

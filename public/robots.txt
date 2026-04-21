@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dylanhias.com/sitemap-index.xml

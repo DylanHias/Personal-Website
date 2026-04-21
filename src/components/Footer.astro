@@ -1,0 +1,30 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-line mt-28 sm:mt-40">
+  <div
+    class="mx-auto max-w-6xl px-6 sm:px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-muted"
+  >
+    <p>© {year} Dylan Hias · Antwerp</p>
+    <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+      <li>
+        <a
+          class="hover:text-accent transition-colors"
+          href="https://www.linkedin.com/in/dylan-hias/"
+          rel="me noopener"
+          target="_blank">LinkedIn</a
+        >
+      </li>
+      <li>
+        <a
+          class="hover:text-accent transition-colors"
+          href="mailto:dylanhias21@gmail.com">Email</a
+        >
+      </li>
+      <li>
+        <a class="hover:text-accent transition-colors" href="/cv.pdf">CV</a>
+      </li>
+    </ul>
+  </div>
+</footer>

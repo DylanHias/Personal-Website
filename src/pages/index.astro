@@ -1,0 +1,534 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import FloatingCallout from "../components/FloatingCallout.astro";
+import SocialColumn from "../components/SocialColumn.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import portrait from "../assets/portrait.jpg";
+
+const description =
+  "Dylan Hias — Technical Account Manager & Cloud Engineer at Ingram Micro, Antwerp. AWS Solutions Architect Associate + Cloud Practitioner, working toward the Golden Jacket.";
+
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Dylan Hias",
+  jobTitle: "Technical Account Manager",
+  worksFor: { "@type": "Organization", name: "Ingram Micro" },
+  url: Astro.site?.toString().replace(/\/$/, "") ?? "",
+  sameAs: ["https://www.linkedin.com/in/dylan-hias/"],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Antwerp",
+    addressCountry: "BE",
+  },
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "UC Leuven-Limburg" },
+    { "@type": "EducationalOrganization", name: "CVO De Oranjerie" },
+  ],
+  email: "mailto:dylanhias21@gmail.com",
+};
+
+const projects = [
+  {
+    index: "01",
+    title: "IM-CRM",
+    kicker: "Desktop CRM · Ingram Micro (internal)",
+    summary:
+      "Local-first desktop CRM for our sales team, integrating with Microsoft Dynamics 365. Built solo, outside my assigned role. In production use internally.",
+    stack: ["TypeScript", "Electron", "Dynamics 365", "Azure AD"],
+    href: "/projects/im-crm/",
+  },
+  {
+    index: "02",
+    title: "Cloud Architect Copilot",
+    kicker: "Conversational AI for AWS architecture",
+    summary:
+      "Chat-based tool that helps engineers design AWS architectures and generate diagrams. Cost-optimized serverless backend using Bedrock for inference.",
+    stack: ["AWS", "Bedrock", "Lambda", "DynamoDB", "Terraform"],
+    status: "In progress — launching [LAUNCH DATE]",
+    href: "/projects/cloud-architect-copilot/",
+  },
+  {
+    index: "03",
+    title: "Koma",
+    kicker: "Personal iOS app",
+    summary:
+      "An app I built for myself, with a custom icon and design system. Not published — built to learn and scratch an itch.",
+    stack: ["Swift", "SwiftUI"],
+    href: "/projects/koma/",
+  },
+];
+
+const experience = [
+  {
+    range: "Oct 2025 — Present",
+    title: "Technical Account Manager",
+    company: "Ingram Micro",
+    note: "AWS technical expertise for resellers and customers — architectural design, translating business needs into cloud solutions, and delivering AWS deep-dive sessions and training.",
+  },
+  {
+    range: "Aug 2025 — Oct 2025",
+    title: "Application Engineer",
+    company: "Contec",
+    note: "Development and configuration of the CPMS manufacturing platform — SQL / T-SQL workflows, PLC integration, testing, optimization.",
+  },
+  {
+    range: "Jul 2023 — May 2024",
+    title: "Software Developer",
+    company: "Easypost Connect",
+    note: "React + TypeScript platform work, styled-components, AWS backends, Nx monorepo and Jest tests.",
+  },
+];
+
+const education = [
+  { degree: "Graduate in Computer Science", school: "UC Leuven-Limburg" },
+  { degree: "Certificate in Computer Science", school: "CVO De Oranjerie" },
+];
+
+const certSlots = [
+  { name: "AWS Cloud Practitioner", held: true },
+  { name: "AWS SA Associate", held: true },
+  { name: "AWS Developer Associate", held: false },
+  { name: "AWS SysOps Admin", held: false },
+  { name: "AWS SA Professional", held: false },
+  { name: "AWS DevOps Pro", held: false },
+  { name: "AWS Security Specialty", held: false },
+  { name: "AWS Networking Specialty", held: false },
+  { name: "AWS Machine Learning", held: false },
+  { name: "AWS Data Engineer", held: false },
+  { name: "AWS AI Practitioner", held: false },
+  { name: "AWS ML Engineer Associate", held: false },
+];
+const heldCount = certSlots.filter((s) => s.held).length;
+
+// Courses / continuous learning (from the resume).
+const courses = [
+  { name: "Clean Code", org: "Udemy", date: "Nov 2025" },
+  { name: "DevOps Bootcamp", org: "Udemy", date: "Mar 2025" },
+  { name: "Team Management Masterclass", org: "Udemy", date: "Dec 2024" },
+];
+---
+
+<BaseLayout
+  title="Technical Account Manager & Cloud Engineer"
+  description={description}
+  path="/"
+>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(personSchema)}
+  />
+
+  <!-- HERO -->
+  <section
+    class="relative overflow-hidden min-h-[100svh] flex items-center"
+    aria-label="Introduction"
+  >
+    <div
+      class="absolute inset-0 bg-[radial-gradient(ellipse_at_25%_30%,#1a1814_0%,#0d0c0b_60%,#0a0a0a_100%)]"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Social column pinned to left edge on sm+ -->
+    <div
+      class="hidden sm:flex absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 z-20"
+    >
+      <SocialColumn />
+    </div>
+
+    <div
+      class="relative z-10 mx-auto w-full max-w-[90rem] px-6 sm:px-24 lg:px-32 pt-32 pb-20 grid grid-cols-12 gap-8 items-center"
+    >
+      <div class="col-span-12 lg:col-span-8">
+        <div
+          class="flex items-center gap-3 mono text-[0.72rem] tracking-[0.22em] uppercase text-muted mb-6"
+          data-reveal
+        >
+          <span class="text-accent">§00</span>
+          <span class="text-subtle">/</span>
+          <span>Identification</span>
+          <span class="text-subtle">·</span>
+          <span>Antwerp · BE</span>
+        </div>
+
+        <h1 class="hero-name text-fg" data-reveal>
+          DYLAN<br /><span class="text-accent relative">
+            HIAS<span class="caret" aria-hidden="true"></span>
+          </span>
+        </h1>
+
+        <p
+          class="mt-8 max-w-xl text-lg text-fg/90 leading-relaxed"
+          data-reveal
+        >
+          Technical Account Manager &amp; Cloud Engineer. I help customers
+          get real value out of cloud infrastructure, and I build the tools
+          I wish existed. Currently at Ingram Micro, working toward the AWS
+          Golden Jacket.
+        </p>
+
+        <div
+          class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm"
+          data-reveal
+        >
+          <a
+            class="link-accent inline-flex items-center gap-2 font-medium"
+            href="mailto:dylanhias21@gmail.com"
+          >
+            Get in touch <span aria-hidden="true">→</span>
+          </a>
+          <a
+            class="text-muted hover:text-fg transition-colors"
+            href="https://www.linkedin.com/in/dylan-hias/"
+            target="_blank"
+            rel="me noopener">LinkedIn</a
+          >
+          <a
+            class="text-muted hover:text-fg transition-colors"
+            href="/cv.pdf">Download CV</a
+          >
+        </div>
+      </div>
+
+      <aside
+        class="col-span-12 lg:col-span-4 mt-12 lg:mt-0 flex flex-col gap-10 lg:pl-8"
+        aria-label="Highlights"
+      >
+        <FloatingCallout
+          label="AWS Solutions Architect Associate"
+          note="SAA-C03 · held through Feb 2029"
+        />
+        <FloatingCallout
+          label="Goal: AWS Golden Jacket"
+          note="All 12 active AWS certifications"
+        />
+      </aside>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section
+    id="about"
+    class="relative mx-auto max-w-6xl px-6 sm:px-10 pt-24 sm:pt-32"
+    aria-labelledby="about-title"
+  >
+    <div class="grid grid-cols-12 gap-10 items-start">
+      <div class="col-span-12 md:col-span-8" data-reveal>
+        <div
+          class="flex items-center gap-3 border-b border-line pb-3 mono text-[0.75rem] uppercase tracking-[0.22em] text-muted"
+        >
+          <span class="text-accent">§01</span>
+          <span class="text-subtle">/</span>
+          <span>About</span>
+        </div>
+        <h2
+          id="about-title"
+          class="section-title mt-6 text-fg"
+        >
+          Credible in the room.<br />Builds what he needs.
+        </h2>
+        <div
+          class="mt-8 space-y-5 text-base sm:text-lg text-fg/90 leading-relaxed max-w-2xl"
+        >
+          <p>
+            I'm a Technical Account Manager at <strong class="text-fg"
+              >Ingram Micro</strong
+            > in Antwerp, focused on AWS and enterprise cloud. My day job
+            is helping customers architect and run cloud workloads.
+            Outside of it, I build software that solves problems I've seen
+            up close — most recently a desktop CRM for our internal sales
+            team that integrates with Dynamics 365.
+          </p>
+          <p>
+            I'm working toward all twelve active AWS certifications (the
+            Golden Jacket), currently holding the Solutions Architect
+            Associate and Cloud Practitioner. I learn by building —
+            Terraform, CDK, and a lot of diagrams.
+          </p>
+          <p>
+            Open to conversations about Cloud Architect, Solutions
+            Architect, and TAM roles, as well as contract work.
+          </p>
+        </div>
+      </div>
+
+      <figure class="col-span-12 md:col-span-4" data-reveal>
+        <div class="border border-line">
+          <Image
+            src={portrait}
+            alt="Portrait of Dylan Hias"
+            widths={[320, 480, 640]}
+            sizes="(min-width: 768px) 320px, 50vw"
+            class="w-full h-auto aspect-[4/5] object-cover object-[55%_center]"
+            loading="lazy"
+          />
+        </div>
+        <figcaption class="mt-3 text-xs text-muted">
+          Dylan Hias · Antwerp · CET
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section
+    id="work"
+    class="relative mx-auto max-w-[90rem] px-6 sm:px-10 pt-24 sm:pt-40"
+    aria-labelledby="work-title"
+  >
+    <div class="max-w-5xl mx-auto">
+      <SectionHeader
+        index="§02"
+        kicker="Selected work"
+        title="Projects"
+        meta={`RECORDS · ${projects.length}`}
+      />
+      <ul class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {projects.map((p) => <li><ProjectCard {...p} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section
+    id="experience"
+    class="relative mx-auto max-w-5xl px-6 sm:px-10 pt-24 sm:pt-40"
+    aria-labelledby="experience-title"
+  >
+    <SectionHeader
+      index="§03"
+      kicker="Experience"
+      title="Where I've worked"
+      meta={`ENTRIES · ${experience.length}`}
+    />
+
+    <ul class="mt-12 border-t border-line">
+      {
+        experience.map((job) => (
+          <li
+            class="grid grid-cols-12 gap-4 items-baseline border-b border-line py-6"
+            data-reveal
+          >
+            <div class="col-span-12 sm:col-span-3 text-sm text-muted">
+              {job.range}
+            </div>
+            <div class="col-span-12 sm:col-span-9">
+              <h3 class="font-display text-2xl text-fg leading-none">
+                {job.title}{" "}
+                <span class="text-muted">· {job.company}</span>
+              </h3>
+              <p class="mt-2 text-sm text-fg/85 leading-relaxed max-w-2xl">
+                {job.note}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-12" data-reveal>
+      <p class="eyebrow">Education</p>
+      <ul class="mt-4 space-y-2">
+        {
+          education.map((e) => (
+            <li class="text-fg">
+              {e.degree}
+              <span class="text-muted"> · {e.school}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <section
+    id="certs"
+    class="relative mx-auto max-w-[90rem] px-6 sm:px-10 pt-24 sm:pt-40"
+    aria-labelledby="certs-title"
+  >
+    <SectionHeader
+      index="§04"
+      kicker="Certifications"
+      title="Working toward the Golden Jacket."
+      meta={`PROGRESS · ${heldCount}/12`}
+    />
+
+    <div class="mt-12 grid grid-cols-12 gap-10 items-start">
+      <div class="col-span-12 lg:col-span-7" data-reveal>
+        <!-- 12-slot progress track -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <p class="label">Certification track</p>
+            <p class="mono text-[0.72rem] tracking-[0.14em] uppercase text-muted">
+              {heldCount} / 12 · {Math.round((heldCount / 12) * 100)}%
+            </p>
+          </div>
+          <div class="flex gap-1.5">
+            {
+              certSlots.map((slot) => (
+                <div
+                  class:list={[
+                    "relative flex-1 h-10 border",
+                    slot.held
+                      ? "bg-accent/15 border-accent"
+                      : "bg-paper border-line",
+                  ]}
+                  title={slot.name}
+                >
+                  {slot.held && (
+                    <span class="absolute inset-0 flex items-center justify-center">
+                      <span class="led" aria-hidden="true" />
+                    </span>
+                  )}
+                </div>
+              ))
+            }
+          </div>
+          <!-- Axis ticks -->
+          <div class="flex items-center justify-between mono text-[0.62rem] tracking-[0.18em] uppercase text-subtle pt-1">
+            <span>01</span>
+            <span>06</span>
+            <span>12 · Golden Jacket</span>
+          </div>
+        </div>
+
+        <!-- Detailed list -->
+        <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+          {
+            certSlots.map((slot, i) => (
+              <li class="flex items-center gap-3 text-sm">
+                <span
+                  class:list={["led shrink-0", !slot.held && "led-dim"]}
+                  aria-hidden="true"
+                />
+                <span class="mono text-[0.7rem] tracking-[0.14em] uppercase text-subtle">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span
+                  class:list={[
+                    slot.held ? "text-fg" : "text-muted",
+                    !slot.held && "line-through decoration-subtle/40",
+                  ]}
+                >
+                  {slot.name}
+                </span>
+                {slot.held && (
+                  <span class="ml-auto mono text-[0.7rem] tracking-[0.16em] uppercase text-accent">
+                    HELD
+                  </span>
+                )}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <aside
+        class="col-span-12 lg:col-span-5 space-y-6 text-base sm:text-lg text-fg/90 leading-relaxed"
+        data-reveal
+      >
+        <p>
+          <strong class="text-fg">Held:</strong> AWS Certified Solutions
+          Architect — Associate (SAA-C03) and AWS Certified Cloud Practitioner
+          (CLF-C02).
+        </p>
+        <p class="text-muted">
+          Working toward Developer Associate, SysOps Administrator, Solutions
+          Architect Professional, DevOps Engineer Professional, and all
+          specialty certifications.
+        </p>
+        <p>
+          <span class="text-accent">Goal:</span> AWS Golden Jacket — all twelve
+          active certifications held simultaneously.
+        </p>
+
+        <!-- Courses -->
+        <div class="pt-4 border-t border-line">
+          <p class="label">Continuous learning · Udemy</p>
+          <ul class="mt-3 space-y-2 text-sm">
+            {
+              courses.map((c) => (
+                <li class="flex items-center justify-between text-muted">
+                  <span>
+                    <span class="text-accent mr-2">·</span>
+                    <span class="text-fg">{c.name}</span>
+                  </span>
+                  <span class="text-subtle">{c.date}</span>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section
+    id="contact"
+    class="relative mx-auto max-w-5xl px-6 sm:px-10 pt-24 sm:pt-40"
+    aria-labelledby="contact-title"
+  >
+    <SectionHeader
+      index="§05"
+      kicker="Contact"
+      title="Let's talk."
+      meta="CHANNELS · 3"
+    />
+
+    <!-- Terminal prompt -->
+    <div
+      class="mt-10 border border-line bg-paper p-5 sm:p-6 mono text-sm tracking-[0.06em]"
+      data-reveal
+    >
+      <p class="text-muted">
+        <span class="text-accent">dylan@dh-system</span>
+        <span class="text-subtle">:</span>
+        <span class="text-fg">~/contact</span>
+        <span class="text-subtle">$</span>
+        <span class="text-fg">ping dylanhias</span>
+      </p>
+      <p class="mt-2 text-muted">
+        PING dylanhias.com (ant.be): 64 bytes — icmp_seq=1 time=reply
+        <span class="text-accent">OK</span>
+      </p>
+    </div>
+
+    <ul
+      class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-px bg-line border border-line"
+      data-reveal
+    >
+      <li class="bg-paper p-6">
+        <p class="label">Email</p>
+        <a
+          class="mt-3 block text-lg text-fg hover:text-accent transition-colors break-all"
+          href="mailto:dylanhias21@gmail.com">dylanhias21@gmail.com</a
+        >
+      </li>
+      <li class="bg-paper p-6">
+        <p class="label">LinkedIn</p>
+        <a
+          class="mt-3 block text-lg text-fg hover:text-accent transition-colors"
+          href="https://www.linkedin.com/in/dylan-hias/"
+          target="_blank"
+          rel="me noopener">dylan-hias</a
+        >
+      </li>
+      <li class="bg-paper p-6">
+        <p class="label">Based in</p>
+        <p class="mt-3 text-lg text-fg">Antwerp · CET</p>
+      </li>
+    </ul>
+
+    <p
+      class="mt-8 mono text-[0.75rem] tracking-[0.18em] uppercase text-muted"
+      data-reveal
+    >
+      Open to Cloud Architect · Solutions Architect · TAM · contract work.
+    </p>
+  </section>
+</BaseLayout>

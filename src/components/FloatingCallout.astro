@@ -1,0 +1,28 @@
+---
+interface Props {
+  label: string;
+  note?: string;
+  side?: "left" | "right";
+  class?: string;
+}
+
+const { label, note, side = "left", class: className = "" } = Astro.props;
+---
+
+<div
+  data-reveal
+  class:list={[
+    "relative flex items-start gap-3 max-w-[16rem]",
+    side === "right" ? "text-right flex-row-reverse" : "text-left",
+    className,
+  ]}
+>
+  <span
+    aria-hidden="true"
+    class="mt-1.5 inline-block h-2 w-2 rounded-full bg-accent shrink-0"
+  ></span>
+  <div class="min-w-0">
+    <p class="text-sm text-fg leading-snug">{label}</p>
+    {note && <p class="mt-1 text-xs text-muted leading-snug">{note}</p>}
+  </div>
+</div>

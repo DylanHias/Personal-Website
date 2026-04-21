@@ -1,0 +1,43 @@
+---
+interface Props {
+  index: string;
+  title: string;
+  kicker: string;
+  summary: string;
+  stack: string[];
+  status?: string;
+  href: string;
+}
+
+const { index, title, kicker, summary, stack, status, href } = Astro.props;
+---
+
+<a
+  href={href}
+  data-reveal
+  class="group relative flex flex-col gap-5 border border-line p-7 hover:border-accent/60 focus-visible:border-accent transition-colors"
+>
+  <div class="flex items-start justify-between gap-4 text-sm text-muted">
+    <span>{index}</span>
+    <span
+      aria-hidden="true"
+      class="transition-transform group-hover:translate-x-1 group-hover:text-accent"
+      >→</span
+    >
+  </div>
+
+  <div>
+    <h3 class="font-display text-4xl leading-none text-fg">
+      {title}
+    </h3>
+    <p class="mt-2 text-sm text-muted">{kicker}</p>
+  </div>
+
+  <p class="text-[0.95rem] text-fg/90 leading-relaxed">{summary}</p>
+
+  <ul class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted">
+    {stack.map((s) => <li>{s}</li>)}
+  </ul>
+
+  {status && <p class="text-xs text-accent/90">{status}</p>}
+</a>

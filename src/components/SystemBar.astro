@@ -1,0 +1,27 @@
+---
+// Thin status bar pinned to the top — "DH/SYSTEM" signature.
+const lastUpdated = "2026.04.21"; // bump when you ship meaningful content changes
+---
+
+<div
+  class="relative z-40 border-b border-line bg-bg/90 backdrop-blur-[2px]"
+>
+  <div
+    class="mx-auto flex max-w-[90rem] items-center justify-between gap-4 px-4 sm:px-6 py-2 mono text-[0.7rem] tracking-[0.22em] uppercase text-muted"
+  >
+    <div class="flex items-center gap-3">
+      <span class="led led-pulse"></span>
+      <span class="text-fg">DH/SYSTEM</span>
+      <span class="hidden sm:inline">· Dylan Hias · Antwerp · BE</span>
+    </div>
+    <div class="hidden md:flex items-center gap-5">
+      <span>UTC+01 · CET</span>
+      <span>STATUS · ACTIVE</span>
+      <span>UPDATED {lastUpdated}</span>
+    </div>
+    <div class="flex md:hidden items-center gap-3">
+      <span>CET</span>
+      <span>{lastUpdated}</span>
+    </div>
+  </div>
+</div>
