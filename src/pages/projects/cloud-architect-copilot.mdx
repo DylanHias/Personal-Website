@@ -2,65 +2,54 @@
 layout: ../../layouts/CaseStudyLayout.astro
 title: "Cloud Architect Copilot"
 seoTitle: "Cloud Architect Copilot Case Study"
-description: "Conversational AI on AWS Bedrock that helps engineers design cloud architectures and generate diagrams. Cost-optimized serverless backend. Dylan Hias."
+description: "Cloud Architect Copilot turns a plain-language AWS architecture description into a canonical JSON model, a rendered diagram, a Well-Architected scorecard, and a monthly cost estimate. Four Bedrock agents on a shared schema, six CDK stacks, serverless end to end."
 path: "/projects/cloud-architect-copilot/"
 role: "Sole developer and architect"
 stack:
-  - "AWS (Lambda, SQS, DynamoDB, S3, VPC endpoints)"
-  - "Amazon Bedrock"
-  - "Terraform"
-  - "React"
-  - "Node.js"
-status: "In progress — launching [LAUNCH DATE — TODO]"
+  - "TypeScript"
+  - "AWS CDK v2"
+  - "AWS Lambda"
+  - "API Gateway"
+  - "Amazon Bedrock (Claude Sonnet 4.5)"
+  - "DynamoDB (single-table)"
+  - "S3"
+  - "Cognito"
+  - "AWS Amplify"
+  - "ECS Fargate (Kroki)"
+  - "CloudWatch + X-Ray"
+  - "React + Vite"
+status: "Live — v2.9.0"
 ---
 
 ## Overview
 
-<p class="todo">TODO · 1 short paragraph</p>
+Cloud Architect Copilot is a SaaS platform that turns a plain-language description of an AWS architecture into four aligned outputs from a single prompt: a canonical architecture JSON, a rendered diagram, a Well-Architected Framework scorecard, and a monthly cost estimate. It's aimed at pre-sales engineers, cloud consultants, junior architects, and software teams who need to evaluate and refine an AWS design quickly without bouncing between a whiteboard tool, a pricing calculator, and a review checklist.
 
-{/* TODO: what Cloud Architect Copilot is and who it's for. */}
+Four Bedrock-backed agents — Parser, Analysis, Cost, and Diagram — share a single canonical schema. Every downstream output derives from that same JSON, so the diagram, the scorecard, and the cost estimate describe the same architecture and can't drift apart.
 
 ## The problem
 
-<p class="todo">TODO · 1–2 paragraphs</p>
+Designing an AWS architecture and reviewing it properly are traditionally three separate tasks in three separate tools. You draw in one app, pull a pricing estimate in another, and hand-walk a Well-Architected review against a long checklist. For a pre-sales engineer iterating through options during a customer call, or a junior architect trying to make sure they haven't missed a basic security control, that overhead is the reason the review gets skipped.
 
-{/* TODO: the pain point this tool addresses. Why existing solutions (plain LLMs, diagramming tools) fall short. */}
+I wanted a single workflow where the user describes the system once and gets back everything needed to defend the design — the picture, the scorecard, the cost — all consistent with each other. Recent Bedrock capabilities (cross-region inference, prompt caching, agentic tool use) made it practical to route the same canonical JSON through four specialised agents instead of one monolithic prompt, which is what the platform is built on.
 
 ## Architecture
 
-<figure>
-  <img
-    src="/projects/cloud-architect-copilot/architecture.png"
-    alt="TODO: describe the Cloud Architect Copilot architecture diagram"
-  />
-  <figcaption>Cloud Architect Copilot — system architecture</figcaption>
-</figure>
+The frontend is a React + Vite app behind Amplify and Cognito. A signed-in user's prompt hits an API Gateway REST endpoint, which fans out to Lambda handlers for parsing, analysis, cost estimation, and diagram rendering. Infrastructure is six CDK stacks — `auth`, `api`, `ai`, `storage`, `kroki`, `monitoring` — deployed in dependency order; no Terraform, no hand-rolled CloudFormation. Everything is AWS SDK v3 modular clients, tagged with `Project=CloudArchitectCopilot` and an `Env` label, named `cac-{env}-{name}` end to end.
 
-<p class="todo">TODO · walkthrough of the diagram</p>
+The model is Claude Sonnet 4.5 via a cross-region inference profile across EU regions, with prompt caching enabled on the Well-Architected ruleset so the same multi-rule context doesn't get re-tokenised on every review. Analysis and cost estimation run in parallel (`Promise.all`) against the parsed JSON — the scorecard doesn't need to wait on the pricing pass and vice versa. Sessions, canonical models, and results all live in a single-table DynamoDB design; diagrams and PDF exports live in S3 behind 15-minute and 7-day presigned URLs respectively. There's no PII in DynamoDB — user identity stays in Cognito.
 
-{/* TODO: walk through the diagram section by section. */}
+## Diagrams via draw.io and Kroki
 
-## Cost decisions
+The Diagram Agent emits draw.io XML — not Mermaid, not AWS-official icons rendered client-side — because draw.io is what the target users actually edit in, and a client-ready PNG they can drop into a slide deck matters more than a pretty DSL. The XML goes to a Kroki renderer that's self-hosted on Fargate in production and hits the public Kroki endpoint in development; the output PNG is written to S3 and handed back as a presigned URL.
 
-<p class="todo">TODO · 2 paragraphs</p>
+## The rule engine, cost model, and tiers
 
-{/* TODO: rationale for single-AZ, no NAT Gateway, VPC endpoints, DynamoDB on-demand vs provisioned, Bedrock token budgets. Be specific about the numbers. */}
+Analysis runs the parsed architecture through an in-process rule engine — roughly sixty rules spread across the six Well-Architected pillars (Security, Reliability, Performance Efficiency, Cost, Operational Excellence, Sustainability). Each rule returns pass/fail, severity, and the affected services, which roll up into per-pillar scores and an overall number. On Pro and above, Bedrock generates targeted recommendations for the failed rules — "move the RDS to a private subnet," "add Multi-AZ," "put ElastiCache in front of the database" — grounded in the same JSON the rules evaluated, so the advice never talks about a resource the architecture doesn't contain.
 
-## Why Bedrock over direct API
+Cost estimation is a built-in pricing map across roughly eighteen service types (EC2, RDS, ALB, DynamoDB, S3, Lambda, CloudFront, ElastiCache, NAT Gateway, ECS, EKS, API Gateway, and so on) rather than a live Price List API call — the map is good enough for ballpark comparisons and avoids a whole class of latency and quota problems. Multi-AZ doubles RDS, NAT Gateway is flagged explicitly as a hidden cost, and cross-AZ data transfer, CloudWatch log ingestion, and ALB LCU charges show up as separate line items. The same pass surfaces savings suggestions — Reserved Instances, VPC endpoints over NAT, DynamoDB provisioned capacity, Lambda power-tuning — so the user gets a rightsizing shortlist, not just a total. A one-click PDF report stitches the diagram, scorecard, top recommendations, and cost line items into a single multi-page export.
 
-<div class="callout">
-
-<p class="todo">TODO · decision write-up</p>
-
-{/* TODO: why Bedrock and not OpenAI/Anthropic directly. Data residency, IAM, billing consolidation, model choice, guardrails. */}
-
-</div>
-
-## What's left before launch
-
-- <span class="todo">TODO</span> bullet 1
-- <span class="todo">TODO</span> bullet 2
-- <span class="todo">TODO</span> bullet 3
+Access is tiered. Free gets three analyses a month with the diagram and scorecard only. Pro (€29) lifts the cap to twenty-five and unlocks the cost estimate, AI-powered recommendations, and PDF export. Team (€79) pushes it to a hundred with a shared workspace. Usage is tracked per-user per-month in DynamoDB and enforced server-side in the Analysis Lambda; Pro and Team allow metered overage, Free hard-blocks at the limit.
 
 ## Screenshots
 

@@ -1,68 +1,60 @@
 ---
 layout: ../../layouts/CaseStudyLayout.astro
-title: "IM-CRM"
-seoTitle: "IM-CRM Case Study"
-description: "Local-first desktop CRM I built solo for the Ingram Micro sales team — Dynamics 365 integration, Electron, Azure AD OAuth. In production use internally."
+title: "Ingram Micro CRM"
+seoTitle: "Ingram Micro CRM Case Study"
+description: "Local-first desktop CRM I built solo for the Ingram Micro sales team — Next.js + Tauri, SQLite-backed offline-first sync with Microsoft Dynamics 365, Azure MSAL auth. In production use internally."
 path: "/projects/im-crm/"
 role: "Sole developer"
 stack:
   - "TypeScript"
-  - "Electron"
+  - "Next.js 14"
+  - "React 18"
+  - "Tauri v2 (Rust)"
+  - "SQLite"
+  - "Zustand"
+  - "Radix UI + Tailwind CSS"
+  - "Azure MSAL (Entra ID)"
   - "Microsoft Dynamics 365"
-  - "Azure AD OAuth"
+  - "Xvantage CLS"
 status: "Private, in production at Ingram Micro"
-timeline: "[X months — TODO]"
+timeline: "~1.5 months"
 ---
 
 ## Overview
 
-<p class="todo">TODO · 1 short paragraph</p>
+Ingram Micro CRM is a local-first desktop application for the Ingram Micro field sales team. It replaces a patchwork of slow web tooling with a single streamlined client for managing customer accounts, logging activities, tracking follow-ups, running pipeline reviews, and looking up invoices — with full offline support and two-way sync to Microsoft Dynamics 365.
 
-{/* TODO: one short paragraph — what IM-CRM is, who uses it, why it exists. */}
+Everyday surfaces include a Dashboard with a Belgium customer map and key counters, a Customers list with an automatic 0–100 health score per account, global Follow-Ups and Opportunities pages, a Revenue Overview (ARR) table with Excel export, an Analytics view across personal, pipeline, customer, and activity metrics, and a unified Timeline of every activity, follow-up, and deal across every account.
 
 ## The problem
 
-<p class="todo">TODO · 1–2 paragraphs</p>
+Field sales reps were spending too much of their day fighting their tools. The stock Dynamics 365 web interface is slow — especially on patchy connections at customer sites — and the data a rep actually needs to make a visit productive is scattered across D365, Xvantage CLS, and a handful of spreadsheets. Logging a single meeting meant clicking through several tabs, waiting for each to load, and then repeating the exercise the next time the same customer came up.
 
-{/* TODO: 1–2 paragraphs — the pain point on the sales team that motivated building this outside of your assigned role. */}
+Fixing it wasn't on anyone's roadmap: this sat outside my assigned role and there was no internal budget for a CRM rebuild. I built it anyway because I was using the same tools my colleagues were complaining about, and a local-first client was the only realistic way to make the workflow feel instant — and to keep working when the Wi-Fi at a customer site drops.
 
 ## Approach
 
-<p class="todo">TODO · 2–3 paragraphs</p>
+The app is a Next.js 14 / React 18 frontend wrapped in Tauri v2 for the desktop shell. All data lives in a local SQLite database managed by Tauri's Rust plugins; nothing reads straight from D365 at interaction time, so every click is instant regardless of network. Zustand holds UI and sync state, persisted so the app restarts into exactly where the user left off.
 
-{/* TODO: 2–3 paragraphs on architectural decisions — why local-first, why Electron, how data sync with Dynamics 365 is structured, offline behavior, etc. */}
+Sync is two-way and queue-based. A background pull hydrates customers, contacts, and opportunities from Dynamics 365; user-authored records — activities, follow-ups, opportunity edits, contact changes — go into a pending queue and get pushed on the next cycle. If a push fails, the item stays in the queue with its error and retries. The user can watch all of this from a Sync page with a live pending table and history log, and the whole app is fully usable with the network cable unplugged. Invoices come from a separate Xvantage CLS adapter, fetched on demand because that data is read-only.
 
-### Integration: Azure AD OAuth as a non-admin
-
-<div class="callout">
-
-<p class="todo">TODO · technical write-up</p>
-
-{/* TODO: the interesting story — how you wired up Azure AD OAuth without admin consent in the tenant. PKCE flow, delegated permissions, consent UX, any workarounds. */}
-
-</div>
-
-## What I'd do differently
-
-<p class="todo">TODO · short</p>
-
-{/* TODO: short, honest — what you'd change with hindsight. */}
+I chose Tauri over Electron to get a small signed installer, a real auto-updater distributed through GitHub Releases, and proper access to the OS from Rust rather than Node — the kind of details that matter when you're shipping a binary to a sales team on managed corporate laptops. Authentication runs on Azure MSAL with delegated permissions, so the app acts on behalf of the signed-in user and inherits whatever access they already have in the Microsoft tenant.
 
 ## Screenshots
 
 {/* Drop images into /public/projects/im-crm/ and reference them below. */}
 
 <figure>
-  <img src="/projects/im-crm/screenshot-1.png" alt="TODO: describe IM-CRM screenshot 1" />
+  <img src="/projects/im-crm/screenshot-1.png" alt="TODO: describe Ingram Micro CRM screenshot 1" />
   <figcaption>TODO: caption for screenshot 1</figcaption>
 </figure>
 
 <figure>
-  <img src="/projects/im-crm/screenshot-2.png" alt="TODO: describe IM-CRM screenshot 2" />
+  <img src="/projects/im-crm/screenshot-2.png" alt="TODO: describe Ingram Micro CRM screenshot 2" />
   <figcaption>TODO: caption for screenshot 2</figcaption>
 </figure>
 
 <figure>
-  <img src="/projects/im-crm/screenshot-3.png" alt="TODO: describe IM-CRM screenshot 3" />
+  <img src="/projects/im-crm/screenshot-3.png" alt="TODO: describe Ingram Micro CRM screenshot 3" />
   <figcaption>TODO: caption for screenshot 3</figcaption>
 </figure>

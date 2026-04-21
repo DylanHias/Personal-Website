@@ -2,26 +2,60 @@
 layout: ../../layouts/CaseStudyLayout.astro
 title: "Koma"
 seoTitle: "Koma Case Study"
-description: "Koma — a personal iOS app I built solo in Swift and SwiftUI, with a custom icon and design system built around a chartreuse 'k' letterform. Dylan Hias."
+description: "Koma — a personal-use native iPadOS client I built solo for a self-hosted Suwayomi manga server. SwiftUI, SwiftData, a UICollectionView-backed infinite reader, and a custom chartreuse 'k' icon."
 path: "/projects/koma/"
 role: "Sole developer and designer"
 stack:
-  - "Swift"
+  - "Swift 5.9+"
   - "SwiftUI"
-status: "Personal use only"
+  - "UIKit (reader only)"
+  - "SwiftData"
+  - "Swift Concurrency"
+  - "Nuke + NukeUI"
+  - "GraphQL over URLSession"
+  - "Suwayomi-Server"
+  - "Xcode 26 / iPadOS 26.4+"
+status: "Personal use, not distributed through the App Store"
+timeline: "3 days"
 ---
 
 ## Overview
 
-<p class="todo">TODO · why you built it</p>
+Koma is a native iPadOS app I built for myself to read manhwa and manhua. It talks to a Suwayomi server running on my home NAS, keeps everything readable offline, and renders long vertical chapters in a single seamless scroll. It's iPad-only, signed with my personal developer account, and never shipped to the App Store — one app, one user.
 
-{/* TODO: 1 paragraph — what Koma is and why you built it for yourself. */}
+The library is a 4-column grid with filters for unread, downloaded, and tracked titles, plus tabs for Korean, Chinese, and Japanese origins. Source browse is a 5-column infinite-scroll view with a debounced global search across every enabled source. Each series has its own detail page with an AniList rating badge, chapter list, and a manual rematch sheet for when the automatic metadata match gets it wrong. Downloads get their own queue view. There's a duplicates manager for when the same series is scraped from three different sites, and a reading-stats page that turns on-device sessions into week/month/all-time totals and a 30-day chart.
+
+## The problem
+
+I read a lot of long-form manhwa, and none of the sites I was using felt right. Most were missing features I wanted, most looked rough, and none of them had everything I was reading — so keeping up with a handful of series meant jumping between three or four different sites and remembering where I'd left off on each one.
+
+I wanted the reader itself to feel native: pinch-to-zoom, auto-scroll with a per-series speed, an in-app night filter, and cross-chapter transitions that don't break the flow of a long arc. I also wanted the library to keep working when the Wi-Fi doesn't. Building a new client was the only honest way to get both — patching the web UI would never have got me there.
+
+## Approach
+
+The app is SwiftUI-first. Each feature has one `@Observable` state object, navigation runs through a `NavigationStack` with a typed path, and the whole project builds with Swift 6 strict concurrency turned on. Concurrency itself is pure async/await and actors — no Combine anywhere.
+
+The reader is the one place that breaks the SwiftUI rule. It's a `UICollectionView`, because SwiftUI's lazy stacks can't hold a steady frame rate across a 200-image chapter at manhwa resolution, and I needed direct control over cell reuse and the prefetch window.
+
+Data lives in SwiftData — `Series`, `Chapter`, `ReadProgress`, `Download`, and a few others — so every view renders from the local store even when the server is unreachable. Networking goes through an actor-isolated `SuwayomiClient` that speaks hand-rolled GraphQL over `URLSession`; no Apollo, no code-gen. AniList has its own small client for ratings and metadata matching, and optional HTTP Basic credentials live in the Keychain.
+
+Images flow through two separate Nuke pipelines. A streaming pipeline with memory and disk caches handles the library and the reader. A second pipeline, disk-only, points at `Documents/Downloads/` and serves downloaded chapters when there's no network.
+
+Downloads are run by a `DownloadCoordinator` actor on top of a background `URLSession`, so a chapter keeps downloading after the app is backgrounded or the iPad is locked. The queue respects a Wi-Fi-only toggle, and series marked "Keep Updated" auto-enqueue new chapters as they appear upstream. Chapters are stored as individual images rather than CBZ archives, which means the first pages are readable before the last ones have finished downloading.
+
+When the network comes back, a `ReconciliationService` flushes any progress updates made while offline, pulls new chapters from the server, and queues downloads for "Keep Updated" series. Connectivity itself is a small `NWPathMonitor` wrapper.
+
+### Duplicates and reading stats
+
+Two smaller features that came out of actually living with the app.
+
+Duplicates groups series by AniList id and normalized title using union-find. I pin a primary, unlink false positives, and the library hides non-primary members — so a series that was scraped from three different sources only shows up once.
+
+Reading stats roll up on-device `ReadingSession` rows into totals, a 30-day chart, and a top-10 series list. No analytics pipeline, no server call — just the data the app already has, surfaced in one place.
 
 ## Design
 
-<p class="todo">TODO · icon + design-system story</p>
-
-{/* TODO: the story of the custom 'k' letterform icon with the chartreuse accent, and how it informed the rest of the design system. */}
+The icon is a custom 'k' letterform in the same chartreuse I use across this site, set on a near-black rounded rectangle. It's the only place in the whole app where the accent colour appears at full saturation — everything else is greyscale with chartreuse reserved for the one thing on screen the user is meant to act on. The letterform informed the rest of the design system: sharp geometric terminals, generous negative space around covers, and a reader chrome that disappears the moment a page is tapped.
 
 <figure>
   <img

@@ -1,28 +1,109 @@
 ---
 interface Props {
+  index?: string;
+  kind?: string;
   label: string;
   note?: string;
-  side?: "left" | "right";
+  status?: "held" | "target" | "progress";
+  statusLabel?: string;
   class?: string;
 }
 
-const { label, note, side = "left", class: className = "" } = Astro.props;
+const {
+  index,
+  kind = "CERT",
+  label,
+  note,
+  status = "held",
+  statusLabel,
+  class: className = "",
+} = Astro.props;
+
+const defaultStatusLabel =
+  status === "held"
+    ? "HELD"
+    : status === "target"
+      ? "TARGET"
+      : "IN PROGRESS";
+const shownStatus = statusLabel ?? defaultStatusLabel;
+const isHeld = status === "held";
+const isTarget = status === "target";
 ---
 
-<div
+<article
   data-reveal
   class:list={[
-    "relative flex items-start gap-3 max-w-[16rem]",
-    side === "right" ? "text-right flex-row-reverse" : "text-left",
+    "group relative border border-line bg-paper/70 pl-5 pr-4 py-4",
+    "hover:border-line-bright transition-colors",
     className,
   ]}
 >
+  <!-- Connector tick toward the hero (desktop only) -->
   <span
     aria-hidden="true"
-    class="mt-1.5 inline-block h-2 w-2 rounded-full bg-accent shrink-0"
+    class="hidden lg:flex items-center absolute top-1/2 -translate-y-1/2 -left-8 w-8 h-px"
+  >
+    <span class="h-px flex-1 bg-line-bright"></span>
+    <span
+      class:list={[
+        "block w-1.5 h-1.5 -ml-px",
+        isHeld ? "bg-accent" : "bg-line-bright",
+      ]}
+    ></span>
+  </span>
+
+  <!-- Corner crosshair accents -->
+  <span
+    aria-hidden="true"
+    class:list={[
+      "absolute -top-px -left-px w-2 h-2 border-t border-l",
+      isHeld ? "border-accent" : "border-line-bright",
+    ]}
   ></span>
-  <div class="min-w-0">
-    <p class="text-sm text-fg leading-snug">{label}</p>
-    {note && <p class="mt-1 text-xs text-muted leading-snug">{note}</p>}
-  </div>
-</div>
+  <span
+    aria-hidden="true"
+    class="absolute -bottom-px -right-px w-2 h-2 border-b border-r border-line-bright"
+  ></span>
+
+  <!-- Header row: index/kind + status -->
+  <header
+    class="flex items-center justify-between gap-3 mono text-[0.62rem] tracking-[0.22em] uppercase"
+  >
+    <span class="text-subtle">
+      {index && <span class="text-muted">{index}</span>}
+      {index && <span class="text-subtle mx-1.5">/</span>}
+      <span>{kind}</span>
+    </span>
+    <span class="flex items-center gap-1.5">
+      <span
+        class:list={[
+          "led",
+          !isHeld && "led-dim",
+          isHeld && "led-pulse",
+        ]}
+        aria-hidden="true"></span>
+      <span
+        class:list={[
+          isHeld ? "text-accent" : isTarget ? "text-fg" : "text-muted",
+        ]}>{shownStatus}</span>
+    </span>
+  </header>
+
+  <!-- Hairline -->
+  <span
+    aria-hidden="true"
+    class="block h-px bg-line mt-2.5 mb-3"></span>
+
+  <!-- Main label -->
+  <p class="font-display text-xl leading-tight text-fg">
+    {label}
+  </p>
+
+  {
+    note && (
+      <p class="mt-2 mono text-[0.68rem] tracking-[0.1em] uppercase text-muted">
+        {note}
+      </p>
+    )
+  }
+</article>

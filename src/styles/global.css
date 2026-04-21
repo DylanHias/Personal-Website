@@ -163,9 +163,9 @@
   /* Terminal-cursor caret — blinks beside the name. */
   .caret {
     display: inline-block;
-    width: 0.62em;
-    height: 0.92em;
-    vertical-align: -0.08em;
+    width: 0.32em;
+    height: 0.72em;
+    vertical-align: baseline;
     background: var(--color-accent);
     margin-left: 0.05em;
     animation: caret-blink 1.08s steps(1) infinite;

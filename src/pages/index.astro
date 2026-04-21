@@ -3,7 +3,6 @@ import { Image } from "astro:assets";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionHeader from "../components/SectionHeader.astro";
 import FloatingCallout from "../components/FloatingCallout.astro";
-import SocialColumn from "../components/SocialColumn.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import portrait from "../assets/portrait.jpg";
 
@@ -17,7 +16,10 @@ const personSchema = {
   jobTitle: "Technical Account Manager",
   worksFor: { "@type": "Organization", name: "Ingram Micro" },
   url: Astro.site?.toString().replace(/\/$/, "") ?? "",
-  sameAs: ["https://www.linkedin.com/in/dylan-hias/"],
+  sameAs: [
+    "https://www.linkedin.com/in/dylan-hias/",
+    "https://github.com/DylanHias",
+  ],
   address: {
     "@type": "PostalAddress",
     addressLocality: "Antwerp",
@@ -33,30 +35,30 @@ const personSchema = {
 const projects = [
   {
     index: "01",
-    title: "IM-CRM",
+    title: "Ingram Micro CRM",
     kicker: "Desktop CRM · Ingram Micro (internal)",
     summary:
       "Local-first desktop CRM for our sales team, integrating with Microsoft Dynamics 365. Built solo, outside my assigned role. In production use internally.",
-    stack: ["TypeScript", "Electron", "Dynamics 365", "Azure AD"],
+    stack: ["TypeScript", "Tauri", "Next.js", "Dynamics 365", "MSAL"],
     href: "/projects/im-crm/",
   },
   {
     index: "02",
     title: "Cloud Architect Copilot",
-    kicker: "Conversational AI for AWS architecture",
+    kicker: "Plain-language AWS designs, reviewed end to end",
     summary:
-      "Chat-based tool that helps engineers design AWS architectures and generate diagrams. Cost-optimized serverless backend using Bedrock for inference.",
-    stack: ["AWS", "Bedrock", "Lambda", "DynamoDB", "Terraform"],
-    status: "In progress — launching [LAUNCH DATE]",
+      "SaaS platform that turns a plain-language AWS architecture description into a canonical JSON model, a rendered diagram, a Well-Architected scorecard, and a monthly cost estimate. Four Bedrock agents on a shared schema, six CDK stacks, serverless throughout.",
+    stack: ["AWS CDK", "Bedrock", "Lambda", "DynamoDB", "React"],
+    status: "Live — v2.9.0",
     href: "/projects/cloud-architect-copilot/",
   },
   {
     index: "03",
     title: "Koma",
-    kicker: "Personal iOS app",
+    kicker: "Personal iPadOS manga reader",
     summary:
-      "An app I built for myself, with a custom icon and design system. Not published — built to learn and scratch an itch.",
-    stack: ["Swift", "SwiftUI"],
+      "A native iPad app I built for myself to read manhwa off a server on my home NAS. Works offline, downloads in the background, and scrolls long chapters without a seam. Just for me — never shipped to the App Store.",
+    stack: ["Swift", "SwiftUI", "SwiftData", "UIKit", "Nuke"],
     href: "/projects/koma/",
   },
 ];
@@ -132,17 +134,10 @@ const courses = [
       aria-hidden="true"
     ></div>
 
-    <!-- Social column pinned to left edge on sm+ -->
     <div
-      class="hidden sm:flex absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 z-20"
+      class="relative z-10 w-full px-10 sm:px-20 lg:pl-36 lg:pr-32 pt-32 pb-20 grid grid-cols-12 gap-x-6 gap-y-8 items-center"
     >
-      <SocialColumn />
-    </div>
-
-    <div
-      class="relative z-10 mx-auto w-full max-w-[90rem] px-6 sm:px-24 lg:px-32 pt-32 pb-20 grid grid-cols-12 gap-8 items-center"
-    >
-      <div class="col-span-12 lg:col-span-8">
+      <div class="col-span-12 lg:col-span-7">
         <div
           class="flex items-center gap-3 mono text-[0.72rem] tracking-[0.22em] uppercase text-muted mb-6"
           data-reveal
@@ -150,8 +145,6 @@ const courses = [
           <span class="text-accent">§00</span>
           <span class="text-subtle">/</span>
           <span>Identification</span>
-          <span class="text-subtle">·</span>
-          <span>Antwerp · BE</span>
         </div>
 
         <h1 class="hero-name text-fg" data-reveal>
@@ -172,7 +165,6 @@ const courses = [
 
         <div
           class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm"
-          data-reveal
         >
           <a
             class="link-accent inline-flex items-center gap-2 font-medium"
@@ -188,21 +180,41 @@ const courses = [
           >
           <a
             class="text-muted hover:text-fg transition-colors"
+            href="https://github.com/DylanHias"
+            target="_blank"
+            rel="me noopener">GitHub</a
+          >
+          <a
+            class="text-muted hover:text-fg transition-colors"
             href="/cv.pdf">Download CV</a
           >
         </div>
       </div>
 
       <aside
-        class="col-span-12 lg:col-span-4 mt-12 lg:mt-0 flex flex-col gap-10 lg:pl-8"
+        class="col-span-12 lg:col-span-4 lg:col-start-9 mt-12 lg:mt-0 flex flex-col gap-8"
         aria-label="Highlights"
       >
         <FloatingCallout
+          index="01"
+          kind="CERT"
+          status="held"
           label="AWS Solutions Architect Associate"
-          note="SAA-C03 · held through Feb 2029"
+          note="SAA-C03 · valid through Feb 2029"
         />
         <FloatingCallout
-          label="Goal: AWS Golden Jacket"
+          index="02"
+          kind="CERT"
+          status="held"
+          label="AWS Certified Cloud Practitioner"
+          note="CLF-C02"
+        />
+        <FloatingCallout
+          index="03"
+          kind="OBJECTIVE"
+          status="target"
+          statusLabel="TARGET"
+          label="AWS Golden Jacket"
           note="All 12 active AWS certifications"
         />
       </aside>
@@ -212,26 +224,55 @@ const courses = [
   <!-- ABOUT -->
   <section
     id="about"
-    class="relative mx-auto max-w-6xl px-6 sm:px-10 pt-24 sm:pt-32"
+    class="relative mx-auto max-w-6xl px-6 sm:px-10 pt-20 sm:pt-32"
     aria-labelledby="about-title"
   >
-    <div class="grid grid-cols-12 gap-10 items-start">
-      <div class="col-span-12 md:col-span-8" data-reveal>
+    <div class="md:grid md:grid-cols-12 md:gap-10 md:items-start">
+      <div class="md:col-span-8" data-reveal>
         <div
-          class="flex items-center gap-3 border-b border-line pb-3 mono text-[0.75rem] uppercase tracking-[0.22em] text-muted"
+          class="flex items-center gap-3 border-b border-line pb-3 mono text-[0.72rem] sm:text-[0.75rem] uppercase tracking-[0.2em] sm:tracking-[0.22em] text-muted"
         >
           <span class="text-accent">§01</span>
           <span class="text-subtle">/</span>
           <span>About</span>
         </div>
+
+        <!-- Mobile-only: small portrait floats next to the title -->
+        <figure
+          class="md:hidden float-right ml-4 mt-6 mb-2 w-28 sm:w-32"
+          aria-hidden="true"
+        >
+          <div class="relative">
+            <span
+              class="absolute -top-px -left-px w-2.5 h-2.5 border-t border-l border-accent z-10"></span>
+            <span
+              class="absolute -top-px -right-px w-2.5 h-2.5 border-t border-r border-accent z-10"></span>
+            <span
+              class="absolute -bottom-px -left-px w-2.5 h-2.5 border-b border-l border-accent z-10"></span>
+            <span
+              class="absolute -bottom-px -right-px w-2.5 h-2.5 border-b border-r border-accent z-10"></span>
+            <div class="border border-line bg-paper p-1.5">
+              <Image
+                src={portrait}
+                alt=""
+                widths={[160, 256]}
+                sizes="128px"
+                class="w-full h-auto aspect-[4/5] object-cover object-[55%_top]"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </figure>
+
         <h2
           id="about-title"
           class="section-title mt-6 text-fg"
         >
-          Credible in the room.<br />Builds what he needs.
+          I make cloud<br />make sense.
         </h2>
+
         <div
-          class="mt-8 space-y-5 text-base sm:text-lg text-fg/90 leading-relaxed max-w-2xl"
+          class="mt-7 md:mt-8 space-y-5 text-base sm:text-lg text-fg/90 leading-relaxed max-w-2xl"
         >
           <p>
             I'm a Technical Account Manager at <strong class="text-fg"
@@ -249,26 +290,39 @@ const courses = [
             Terraform, CDK, and a lot of diagrams.
           </p>
           <p>
-            Open to conversations about Cloud Architect, Solutions
-            Architect, and TAM roles, as well as contract work.
+            Always happy to talk cloud architecture. I'm open to
+            Solutions Architect or Technical Account Manager roles, and
+            available for contract work.
           </p>
         </div>
       </div>
 
-      <figure class="col-span-12 md:col-span-4" data-reveal>
-        <div class="border border-line">
-          <Image
-            src={portrait}
-            alt="Portrait of Dylan Hias"
-            widths={[320, 480, 640]}
-            sizes="(min-width: 768px) 320px, 50vw"
-            class="w-full h-auto aspect-[4/5] object-cover object-[55%_center]"
-            loading="lazy"
-          />
+      <!-- Desktop-only: full-size portrait column -->
+      <figure class="hidden md:block md:col-span-4" data-reveal>
+        <div class="relative">
+          <span
+            class="absolute -top-px -left-px w-3 h-3 border-t border-l border-accent z-10"
+            aria-hidden="true"></span>
+          <span
+            class="absolute -top-px -right-px w-3 h-3 border-t border-r border-accent z-10"
+            aria-hidden="true"></span>
+          <span
+            class="absolute -bottom-px -left-px w-3 h-3 border-b border-l border-accent z-10"
+            aria-hidden="true"></span>
+          <span
+            class="absolute -bottom-px -right-px w-3 h-3 border-b border-r border-accent z-10"
+            aria-hidden="true"></span>
+          <div class="border border-line bg-paper p-2">
+            <Image
+              src={portrait}
+              alt=""
+              widths={[320, 480, 640]}
+              sizes="320px"
+              class="w-full h-auto aspect-[4/5] object-cover object-[55%_top]"
+              loading="lazy"
+            />
+          </div>
         </div>
-        <figcaption class="mt-3 text-xs text-muted">
-          Dylan Hias · Antwerp · CET
-        </figcaption>
       </figure>
     </div>
   </section>
@@ -329,14 +383,57 @@ const courses = [
       }
     </ul>
 
-    <div class="mt-12" data-reveal>
-      <p class="eyebrow">Education</p>
-      <ul class="mt-4 space-y-2">
+    <div class="mt-16" data-reveal>
+      <div
+        class="flex items-center gap-3 border-b border-line pb-3 mono text-[0.72rem] uppercase tracking-[0.22em] text-muted"
+      >
+        <span class="text-accent">§03.1</span>
+        <span class="text-subtle">/</span>
+        <span>Education</span>
+        <span class="ml-auto text-subtle">
+          RECORDS · {String(education.length).padStart(2, "0")}
+        </span>
+      </div>
+
+      <ul class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {
-          education.map((e) => (
-            <li class="text-fg">
-              {e.degree}
-              <span class="text-muted"> · {e.school}</span>
+          education.map((e, i) => (
+            <li
+              class="group relative border border-line bg-paper p-5 hover:border-line-bright transition-colors"
+            >
+              <span
+                class="absolute -top-px -left-px w-2.5 h-2.5 border-t border-l border-accent"
+                aria-hidden="true"
+              />
+              <span
+                class="absolute -bottom-px -right-px w-2.5 h-2.5 border-b border-r border-accent"
+                aria-hidden="true"
+              />
+
+              <div class="flex items-center gap-3 mono text-[0.68rem] tracking-[0.2em] uppercase text-subtle">
+                <span class="led shrink-0" aria-hidden="true" />
+                <span class="text-accent">
+                  EDU-{String(i + 1).padStart(2, "0")}
+                </span>
+                <span class="text-subtle">/</span>
+                <span>Completed</span>
+              </div>
+
+              <div class="mt-4">
+                <p class="mono text-[0.62rem] tracking-[0.24em] uppercase text-muted">
+                  Degree
+                </p>
+                <p class="mt-1 font-display text-2xl text-fg leading-tight">
+                  {e.degree}
+                </p>
+              </div>
+
+              <div class="mt-4 pt-4 border-t border-line">
+                <p class="mono text-[0.62rem] tracking-[0.24em] uppercase text-muted">
+                  Institution
+                </p>
+                <p class="mt-1 text-sm text-fg/90">{e.school}</p>
+              </div>
             </li>
           ))
         }
@@ -347,7 +444,7 @@ const courses = [
   <!-- CERTIFICATIONS -->
   <section
     id="certs"
-    class="relative mx-auto max-w-[90rem] px-6 sm:px-10 pt-24 sm:pt-40"
+    class="relative mx-auto max-w-[90rem] px-6 sm:px-10 pt-20 sm:pt-40"
     aria-labelledby="certs-title"
   >
     <SectionHeader
@@ -357,22 +454,22 @@ const courses = [
       meta={`PROGRESS · ${heldCount}/12`}
     />
 
-    <div class="mt-12 grid grid-cols-12 gap-10 items-start">
+    <div class="mt-10 sm:mt-12 grid grid-cols-12 gap-y-10 lg:gap-10 items-start">
       <div class="col-span-12 lg:col-span-7" data-reveal>
         <!-- 12-slot progress track -->
         <div class="space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
             <p class="label">Certification track</p>
             <p class="mono text-[0.72rem] tracking-[0.14em] uppercase text-muted">
               {heldCount} / 12 · {Math.round((heldCount / 12) * 100)}%
             </p>
           </div>
-          <div class="flex gap-1.5">
+          <div class="flex gap-1 sm:gap-1.5">
             {
               certSlots.map((slot) => (
                 <div
                   class:list={[
-                    "relative flex-1 h-10 border",
+                    "relative flex-1 h-8 sm:h-10 border",
                     slot.held
                       ? "bg-accent/15 border-accent"
                       : "bg-paper border-line",
@@ -392,24 +489,25 @@ const courses = [
           <div class="flex items-center justify-between mono text-[0.62rem] tracking-[0.18em] uppercase text-subtle pt-1">
             <span>01</span>
             <span>06</span>
-            <span>12 · Golden Jacket</span>
+            <span><span class="sm:hidden">12 · GJ</span><span class="hidden sm:inline">12 · Golden Jacket</span></span>
           </div>
         </div>
 
         <!-- Detailed list -->
-        <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5">
+        <ul class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
           {
             certSlots.map((slot, i) => (
-              <li class="flex items-center gap-3 text-sm">
+              <li class="flex items-center gap-2.5 text-sm">
                 <span
                   class:list={["led shrink-0", !slot.held && "led-dim"]}
                   aria-hidden="true"
                 />
-                <span class="mono text-[0.7rem] tracking-[0.14em] uppercase text-subtle">
+                <span class="mono text-[0.7rem] tracking-[0.14em] uppercase text-subtle shrink-0">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span
                   class:list={[
+                    "min-w-0 flex-1 truncate",
                     slot.held ? "text-fg" : "text-muted",
                     !slot.held && "line-through decoration-subtle/40",
                   ]}
@@ -417,7 +515,7 @@ const courses = [
                   {slot.name}
                 </span>
                 {slot.held && (
-                  <span class="ml-auto mono text-[0.7rem] tracking-[0.16em] uppercase text-accent">
+                  <span class="shrink-0 mono text-[0.7rem] tracking-[0.16em] uppercase text-accent">
                     HELD
                   </span>
                 )}
@@ -452,12 +550,12 @@ const courses = [
           <ul class="mt-3 space-y-2 text-sm">
             {
               courses.map((c) => (
-                <li class="flex items-center justify-between text-muted">
-                  <span>
+                <li class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 text-muted">
+                  <span class="min-w-0">
                     <span class="text-accent mr-2">·</span>
                     <span class="text-fg">{c.name}</span>
                   </span>
-                  <span class="text-subtle">{c.date}</span>
+                  <span class="text-subtle shrink-0">{c.date}</span>
                 </li>
               ))
             }
@@ -470,14 +568,14 @@ const courses = [
   <!-- CONTACT -->
   <section
     id="contact"
-    class="relative mx-auto max-w-5xl px-6 sm:px-10 pt-24 sm:pt-40"
+    class="relative mx-auto max-w-6xl px-6 sm:px-10 pt-24 sm:pt-40"
     aria-labelledby="contact-title"
   >
     <SectionHeader
       index="§05"
       kicker="Contact"
       title="Let's talk."
-      meta="CHANNELS · 3"
+      meta="CHANNELS · 4"
     />
 
     <!-- Terminal prompt -->
@@ -499,7 +597,7 @@ const courses = [
     </div>
 
     <ul
-      class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-px bg-line border border-line"
+      class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line"
       data-reveal
     >
       <li class="bg-paper p-6">
@@ -512,11 +610,34 @@ const courses = [
       <li class="bg-paper p-6">
         <p class="label">LinkedIn</p>
         <a
-          class="mt-3 block text-lg text-fg hover:text-accent transition-colors"
+          class="mt-3 inline-flex items-center gap-2 text-lg text-fg hover:text-accent transition-colors group"
           href="https://www.linkedin.com/in/dylan-hias/"
           target="_blank"
-          rel="me noopener">dylan-hias</a
+          rel="me noopener"
         >
+          <span>dylan-hias</span>
+          <span
+            class="mono text-accent transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden="true">↗</span
+          >
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
+      </li>
+      <li class="bg-paper p-6">
+        <p class="label">GitHub</p>
+        <a
+          class="mt-3 inline-flex items-center gap-2 text-lg text-fg hover:text-accent transition-colors group"
+          href="https://github.com/DylanHias"
+          target="_blank"
+          rel="me noopener"
+        >
+          <span>DylanHias</span>
+          <span
+            class="mono text-accent transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            aria-hidden="true">↗</span
+          >
+          <span class="sr-only">(opens in new tab)</span>
+        </a>
       </li>
       <li class="bg-paper p-6">
         <p class="label">Based in</p>
@@ -528,7 +649,7 @@ const courses = [
       class="mt-8 mono text-[0.75rem] tracking-[0.18em] uppercase text-muted"
       data-reveal
     >
-      Open to Cloud Architect · Solutions Architect · TAM · contract work.
+      Let's talk cloud architecture · open to Solutions Architect or TAM roles · available for contract work.
     </p>
   </section>
 </BaseLayout>
