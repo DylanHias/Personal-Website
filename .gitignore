@@ -18,6 +18,10 @@ pnpm-debug.log*
 .env.production
 .env.local
 
+# wrangler / cloudflare
+.wrangler/
+.dev.vars
+
 # editor
 .vscode/
 .idea/
