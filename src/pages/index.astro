@@ -9,13 +9,19 @@ import portrait from "../assets/portrait.jpg";
 const description =
   "Dylan Hias — Technical Account Manager & Cloud Engineer at Ingram Micro, Antwerp. AWS Solutions Architect Associate + Cloud Practitioner, working toward the Golden Jacket.";
 
+const siteOrigin = Astro.site?.toString().replace(/\/$/, "") ?? "";
+
 const personSchema = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: "Dylan Hias",
+  givenName: "Dylan",
+  familyName: "Hias",
   jobTitle: "Technical Account Manager",
+  description,
   worksFor: { "@type": "Organization", name: "Ingram Micro" },
-  url: Astro.site?.toString().replace(/\/$/, "") ?? "",
+  url: siteOrigin,
+  image: `${siteOrigin}${portrait.src}`,
   sameAs: [
     "https://www.linkedin.com/in/dylan-hias/",
     "https://github.com/DylanHias",
@@ -28,6 +34,13 @@ const personSchema = {
   alumniOf: [
     { "@type": "CollegeOrUniversity", name: "UC Leuven-Limburg" },
     { "@type": "EducationalOrganization", name: "CVO De Oranjerie" },
+  ],
+  knowsAbout: [
+    "Amazon Web Services",
+    "Cloud architecture",
+    "AWS CDK",
+    "Serverless",
+    "Solutions architecture",
   ],
   email: "mailto:dylanhias21@gmail.com",
 };
